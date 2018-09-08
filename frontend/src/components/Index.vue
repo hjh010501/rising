@@ -1,6 +1,8 @@
 <template>
 <div class="centering">
   <div class="grid">
+      <pre>{{user}}</pre>
+      <div>{{accessLog}}</div>
     <!-- <h1>👋Hello, kidevelop</h1> -->
     <div class="column">
         <section class="info-section">
@@ -17,14 +19,26 @@
 
 <script>
 
+import axios from 'axios'
+
 export default {
   name: 'HelloWorld',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      msg: 'Welcome to Your Vue.js App',
+      user: null,
+      accessLog: []
     }
+  },
+  created () {
+    axios.get('/api/auth/check')
+      .then(data => {
+        this.user = data.user
+        this.accessLog = data.accessLog
+      })
   }
 }
+
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

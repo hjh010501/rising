@@ -27,16 +27,13 @@ export default {
       this.$router.push({ name: 'Register' })
     },
     login: function () {
-      this.$http.post('/api/auth/login', {
+      this.$store.dispatch('LOGIN', {
         id: this.id,
         password: this.password
       })
-        .then(response => {
-          const token = response.data.token
-          localStorage.setItem('user-token', token)
-        })
+        .then(() => this.$router.push({ name: 'Index' }))
         .catch(e => {
-          localStorage.removeItem('user-token')
+          this.errors = e
         })
     }
   }

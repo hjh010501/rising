@@ -6,6 +6,7 @@ import Ripple from 'vue-ripple-directive'
 import App from './App'
 import router from './router'
 import axios from 'axios'
+import store from './store'
 
 Vue.prototype.$http = axios
 // Vue.use(RisingComponents)
@@ -21,5 +22,6 @@ new Vue({
   el: '#app',
   router,
   components: { App },
-  template: '<App/>'
+  template: '<App/>',
+  store
 })

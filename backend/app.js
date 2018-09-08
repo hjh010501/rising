@@ -3,7 +3,6 @@
 ==========================*/
 const express = require('express')
 const app = express()
-const server = require('http').createServer(app)
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
@@ -15,18 +14,6 @@ const mongoose = require('mongoose')
 const config = require('./config')
 const port = process.env.PORT || 9999 
 
-
-/* =======================
-    SOCKETIO CONFIGURATION
-==========================*/
-
-const io = require('socket.io')(server);
-
-io.on('connection', function(socket) {
-    socket.on('login', function(data) {
-        console.log(data);
-    })
-})
 
 /* =======================
     EXPRESS CONFIGURATION
@@ -51,9 +38,17 @@ app.get('/', (req, res) => {
 app.use('/api', require('./routes/api'))
 
 // open the server
-app.listen(port, () => {
+global.ioserver = app.listen(port, () => {
     console.log(`Express is running on http://localhost:${port}`)
 })
+
+/* =======================
+    SOCKETIO CONFIGURATION
+==========================*/
+
+global.io = require('socket.io').listen(ioserver);
+
+const socketapi = require('./socketapi/index')
 
 /* =======================
     CONNECT TO MONGODB SERVER
