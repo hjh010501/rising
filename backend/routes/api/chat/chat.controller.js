@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken')
+const config = require('../../../config')
 const User = require('../../../models/user')
 const Chat = require('../../../models/chat')
 
@@ -9,18 +10,14 @@ const Chat = require('../../../models/chat')
     }
 */
 
-exports.upload = (req, res) => {
+exports.upload = async (req, res) => {
 
     const content = req.content
-    
-    const user = 'test'
-
-    const create = (chat) => {
-        return Chat.create('test', req.content)
-    }
-
-    User.findOneById(user)
-    .then(create)
+    const p = await jwt.verify(req.token, config.secret)
+    await new Chat({
+        id: p.id,
+        content: req.content
+    }).save()
 }
 
 /*
@@ -32,15 +29,12 @@ exports.upload = (req, res) => {
 
 exports.load = (req, res) => {
 
-
     const user = 'test'
 
-    const respond = (chats) => {
-        return chats
-    }
-
-    if(User.findOneById(user)) {
-        Chat.find({}).exec()
-        .then(respond)
-    } 
+        Chat.find({}, '-date').exec()
+        .then(
+            chats=> {
+                res.json({chats})
+            }
+        )
 }

@@ -57,28 +57,6 @@ a {
   margin-right: 60px;
 }
 
-.centering {
-  -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    height: 100vh;
-    margin-top: -118px;
-}
-.grid {
-  width: 100%;
-  margin: 0 auto;
-  max-width: 650px;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-}
-
 .logo {
   width: 134px;
   height: 58px;

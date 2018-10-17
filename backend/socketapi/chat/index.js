@@ -1,11 +1,14 @@
 const controller = require('../../routes/api/chat/chat.controller')
+const Chat = require('../../models/chat')
 
-io.on('connection', function(socket) {
-    socket.on('SEND_MESSAGE', function(data) {
-        console.log(data)
+io.on('connection', socket => {
+    Chat.find({}).exec()
+        .then(chats => io.emit('MESSAGE',  JSON.stringify(chats)))
+    
+    socket.on('SEND_MESSAGE', data => {
         controller.upload(data)
-        var messages = controller.load()
-        console.log(messages)
-        io.emit('MESSAGE', messages)
+            .then(() => Chat.find({}).exec())
+            .then(chats => io.emit('MESSAGE',  JSON.stringify(chats)))
+
     });
 })

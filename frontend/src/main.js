@@ -13,6 +13,7 @@ Vue.prototype.$http = axios
 Vue.component('rising-button', require('./components/rising-components/rising-button.vue').default)
 Vue.component('rising-textbox', require('./components/rising-components/rising-textbox.vue').default)
 Vue.component('rising-card', require('./components/rising-components/rising-card.vue').default)
+Vue.component('rising-chat', require('./components/rising-components/rising-chat.vue').default)
 
 Ripple.color = 'rgba(255, 255, 255, 0.25)'
 Vue.directive('ripple', Ripple)

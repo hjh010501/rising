@@ -1,32 +1,20 @@
 <template>
+<div style="padding-bottom: 50px;" class="chat">
 <div class="centering">
   <div class="grid">
-    <div class="login">
     <h1>🗣</h1>
-    <div class="card mt-3">
-      <div class="card-body">
-          <div class="card-title">
-              <h3>Chat Group</h3>
-              <hr>
-          </div>
-          <div class="card-body">
-              <div class="messages" v-for="(msg, index) in messages" :key="index">
-                  <p><span class="font-weight-bold">{{ msg.user }}: </span>{{ msg.message }}</p>
-              </div>
-          </div>
-      </div>
-      <div class="card-footer">
-          <form @submit.prevent="sendMessage">
-              <div class="gorm-group pb-3">
-                  <label for="message">Message:</label>
-                  <input type="text" v-model="message" class="form-control">
-              </div>
-              <button type="submit" class="btn btn-success">Send</button>
-          </form>
-      </div>
-  </div>
+        <div class="messages" v-for="(msg, index) in messages" :key="index">
+          <rising-chat :writer="msg.id" :content="msg.content" v-ripple="'rgba(255,255,255, 0.15)'"></rising-chat>
+              <div style="height: 70px;" class="blank"></div>
+        </div>
     </div>
   </div>
+        <div class="card-footer">
+          <form @submit.prevent="sendMessage">
+              <input type="text" v-model="message" class="chatinput" v-ripple="'rgba(255,255,255, 0.15)'">
+              <button onClick="window.scrollTo(0, document.documentElement.scrollHeight)" type="submit" class="sendbutton" v-ripple="'rgba(255,255,255, 0.15)'">🚀</button>
+          </form>
+      </div>
 </div>
 </template>
 
@@ -36,14 +24,25 @@ import io from 'socket.io-client'
 export default {
   data () {
     return {
-      content: '',
+      message: '',
       messages: [],
       socket: io('/')
     }
   },
+
+  async created () {
+    await this.getMessage()
+    this.socket.on('MESSAGE', (data) => {
+      // this.$set(this.messages, JSON.parse(data))
+      this.messages = JSON.parse(data)
+      window.scrollTo(0, document.documentElement.scrollHeight)
+    })
+  },
   methods: {
+    async getMessage (e) {
+      this.messages = (await this.$http.get('/api/chat/load')).data.chat
+    },
     sendMessage (e) {
-      e.preventDefault()
       this.socket.emit('SEND_MESSAGE', {
         content: this.message,
         token: localStorage.accessToken
@@ -51,20 +50,15 @@ export default {
       this.message = ''
     }
   },
-  mounted () {
-    this.socket.on('MESSAGE', (data) => {
-      console.log(data)
-      this.messages = [...this.messages, data]
-    })
+  beforemounted () {
+    this.getMessage()
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss" scoped>
-.login {
-  width: 100%;
-}
+<style scoped>
+
 h1 {
   font-size: 62px;
   text-align: left;
@@ -75,5 +69,54 @@ h1 {
   color: #ff0000;
   user-select: none;
   margin: 0;
+}
+.centering {
+  margin-bottom: 100px;
+}
+.card-footer {
+  background-color: #fff;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 70px;
+  margin-left: -68px;
+  border-top: 1px solid #ddd;
+}
+
+.chatinput {
+  width: 80%;
+  height: 70px;
+  outline-width: 0;
+  font-size: 24px;
+  font-weight: 500;
+  font-stretch: normal;
+  letter-spacing: -0.7px;
+  background-color: white;
+  border: 0;
+  box-sizing: border-box;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  float: left;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.chatinput::placeholder {
+  color: #ddd;
+}
+
+.sendbutton {
+  width: 20%;
+  height:70px;
+  text-align: center;
+  line-height: 70px;
+  font-size: 28px;
+  font-weight: 500;
+  font-stretch: normal;
+  letter-spacing: -0.7px;
+  border: 0;
+  background-color: #fff;
+  outline-width: 0;
+  border-left: 1px solid #ddd;
 }
 </style>
